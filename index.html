@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IsometricCraft Launcher</title>
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        background: #0a0a0a;
+        color: #e0e0e0;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    h1 {
+        position: fixed;
+        top: 24px;
+        left: 24px;
+        font-size: 26px;
+        font-weight: 400;
+        letter-spacing: 2px;
+        color: #ffffff;
+        margin: 0;
+    }
+
+    .controls {
+        position: fixed;
+        top: 50%;
+        right: 24px;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 20px;
+    }
+
+    .btn {
+        height: 56px;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        color: #e0e0e0;
+        font-size: 16px;
+        cursor: pointer;
+        padding: 0 40px;
+        transition: background 0.2s;
+        min-width: 180px;
+    }
+
+    .btn:hover:not(:disabled) {
+        background: #252525;
+    }
+
+    .btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
+    .version-btn {
+        position: relative;
+    }
+
+    .dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 180px;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-top: none;
+        display: none;
+        z-index: 10;
+        max-height: 240px;
+        overflow-y: auto;
+    }
+
+    .dropdown.show {
+        display: block;
+    }
+
+    .dropdown-item {
+        padding: 14px 18px;
+        font-size: 15px;
+        cursor: pointer;
+        border-bottom: 1px solid #252525;
+    }
+
+    .dropdown-item:hover {
+        background: #252525;
+    }
+
+    .version-display {
+        position: fixed;
+        bottom: 16px;
+        right: 16px;
+        font-size: 13px;
+        color: #666;
+    }
+</style>
+</head>
+<body>
+<h1>IsometricCraft</h1>
+
+<div class="controls">
+    <button id="launchBtn" class="btn" disabled>LAUNCH</button>
+    <div class="version-btn-container">
+        <button id="versionBtn" class="btn version-btn">VERSION</button>
+        <div id="dropdown" class="dropdown"></div>
+    </div>
+</div>
+
+<div class="version-display" id="versionDisplay">(none selected)</div>
+
+<script>
+const folder = "./websites_ver/";
+const launchBtn = document.getElementById("launchBtn");
+const versionBtn = document.getElementById("versionBtn");
+const dropdown = document.getElementById("dropdown");
+const versionDisplay = document.getElementById("versionDisplay");
+
+let selectedVersion = null;
+
+async function loadVersions() {
+    try {
+        const res = await fetch(folder + "versions.json");
+        const versions = await res.json();
+        dropdown.innerHTML = "";
+        
+        versions.forEach(v => {
+            const item = document.createElement("div");
+            item.className = "dropdown-item";
+            item.textContent = v.replace(".html", "");
+            item.onclick = () => selectVersion(v);
+            dropdown.appendChild(item);
+        });
+    } catch (e) {
+        dropdown.innerHTML = '<div class="dropdown-item">Error loading</div>';
+    }
+}
+
+function selectVersion(version) {
+    selectedVersion = version;
+    const name = version.replace(".html", "");
+    versionDisplay.textContent = name;
+    launchBtn.disabled = false;
+    dropdown.classList.remove("show");
+}
+
+versionBtn.onclick = () => dropdown.classList.toggle("show");
+
+launchBtn.onclick = () => {
+    if (selectedVersion) {
+        window.location.href = folder + selectedVersion;
+    }
+};
+
+document.addEventListener("click", e => {
+    if (!versionBtn.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.remove("show");
+    }
+});
+
+loadVersions();
+</script>
+</body>
+</html>
