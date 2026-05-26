@@ -4,103 +4,128 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IsometricCraft Launcher</title>
+<link rel="icon" type="image/png" href="assets/icon.png">
 <style>
-    body {
-        margin: 0;
-        height: 100vh;
-        background: #0a0a0a;
-        color: #e0e0e0;
-        font-family: 'Segoe UI', sans-serif;
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+        height:100vh;
+        background:url('assets/image.png') center/cover no-repeat fixed;
+        color:#e0e0e0;
+        font-family:'Segoe UI',sans-serif;
+        position:relative;
+        animation:fadeIn 1s ease-out
     }
-
-    h1 {
-        position: fixed;
-        top: 24px;
-        left: 24px;
-        font-size: 26px;
-        font-weight: 400;
-        letter-spacing: 2px;
-        color: #ffffff;
-        margin: 0;
+    body::before{
+        content:'';
+        position:fixed;
+        top:0;left:0;
+        width:100%;height:100%;
+        background:rgba(0,0,0,0.75);
+        z-index:-1
     }
-
-    .controls {
-        position: fixed;
-        top: 50%;
-        right: 24px;
-        transform: translateY(-50%);
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 20px;
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes slideIn{from{transform:translateX(-20px);opacity:0}to{transform:translateX(0);opacity:1}}
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,0.1)}50%{box-shadow:0 0 20px 5px rgba(255,255,255,0.1)}}
+    .title-container{
+        position:fixed;
+        top:24px;
+        left:24px;
+        display:flex;
+        align-items:center;
+        gap:12px;
+        animation:slideIn 0.8s ease-out 0.3s both
     }
-
-    .btn {
-        height: 56px;
-        background: #1a1a1a;
-        border: 1px solid #333;
-        color: #e0e0e0;
-        font-size: 16px;
-        cursor: pointer;
-        padding: 0 40px;
-        transition: background 0.2s;
-        min-width: 180px;
+    .title-icon{
+        width:32px;
+        height:32px;
+        object-fit:contain;
+        filter:brightness(1.1)
     }
-
-    .btn:hover:not(:disabled) {
-        background: #252525;
+    h1{
+        font-size:26px;
+        font-weight:400;
+        letter-spacing:2px;
+        color:#ffffff;
+        text-shadow:0 2px 10px rgba(0,0,0,0.5)
     }
-
-    .btn:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
+    .controls{
+        position:fixed;
+        top:50%;
+        right:24px;
+        transform:translateY(-50%);
+        display:flex;
+        flex-direction:column;
+        align-items:flex-end;
+        gap:20px;
+        animation:slideIn 0.8s ease-out 0.6s both
     }
-
-    .version-btn {
-        position: relative;
+    .btn{
+        height:56px;
+        background:rgba(26,26,26,0.9);
+        border:1px solid rgba(255,255,255,0.1);
+        color:#e0e0e0;
+        font-size:16px;
+        cursor:pointer;
+        padding:0 40px;
+        transition:all 0.3s ease;
+        min-width:180px;
+        position:relative;
+        overflow:hidden
     }
-
-    .dropdown {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 180px;
-        background: #1a1a1a;
-        border: 1px solid #333;
-        border-top: none;
-        display: none;
-        z-index: 10;
-        max-height: 240px;
-        overflow-y: auto;
+    .btn::after{
+        content:'';
+        position:absolute;
+        top:0;left:-100%;
+        width:100%;height:100%;
+        background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);
+        transition:left 0.5s ease
     }
-
-    .dropdown.show {
-        display: block;
+    .btn:hover:not(:disabled){
+        background:rgba(37,37,37,0.95);
+        border-color:rgba(255,255,255,0.2);
+        transform:translateY(-2px)
     }
-
-    .dropdown-item {
-        padding: 14px 18px;
-        font-size: 15px;
-        cursor: pointer;
-        border-bottom: 1px solid #252525;
+    .btn:hover:not(:disabled)::after{left:100%}
+    .btn:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+    .version-btn{position:relative}
+    .dropdown{
+        position:absolute;
+        top:100%;
+        left:0;
+        width:180px;
+        background:rgba(26,26,26,0.95);
+        border:1px solid rgba(255,255,255,0.1);
+        border-top:none;
+        display:none;
+        z-index:10;
+        max-height:240px;
+        overflow-y:auto;
+        backdrop-filter:blur(10px)
     }
-
-    .dropdown-item:hover {
-        background: #252525;
+    .dropdown.show{display:block;animation:fadeIn 0.2s ease}
+    .dropdown-item{
+        padding:14px 18px;
+        font-size:15px;
+        cursor:pointer;
+        border-bottom:1px solid rgba(255,255,255,0.05);
+        transition:background 0.2s ease
     }
-
-    .version-display {
-        position: fixed;
-        bottom: 16px;
-        right: 16px;
-        font-size: 13px;
-        color: #666;
+    .dropdown-item:hover{background:rgba(255,255,255,0.08)}
+    .version-display{
+        position:fixed;
+        bottom:16px;
+        right:16px;
+        font-size:13px;
+        color:rgba(255,255,255,0.6);
+        animation:pulse 3s infinite
     }
 </style>
 </head>
 <body>
-<h1>IsometricCraft</h1>
-
+<div class="title-container">
+    <img src="assets/icon.png" alt="Icon" class="title-icon">
+    <h1>IsometricCraft</h1>
+</div>
 <div class="controls">
     <button id="launchBtn" class="btn" disabled>LAUNCH</button>
     <div class="version-btn-container">
@@ -108,58 +133,42 @@
         <div id="dropdown" class="dropdown"></div>
     </div>
 </div>
-
 <div class="version-display" id="versionDisplay">(none selected)</div>
-
 <script>
-const folder = "./websites_ver/";
-const launchBtn = document.getElementById("launchBtn");
-const versionBtn = document.getElementById("versionBtn");
-const dropdown = document.getElementById("dropdown");
-const versionDisplay = document.getElementById("versionDisplay");
-
-let selectedVersion = null;
-
-async function loadVersions() {
-    try {
-        const res = await fetch(folder + "versions.json");
-        const versions = await res.json();
-        dropdown.innerHTML = "";
-        
-        versions.forEach(v => {
-            const item = document.createElement("div");
-            item.className = "dropdown-item";
-            item.textContent = v.replace(".html", "");
-            item.onclick = () => selectVersion(v);
-            dropdown.appendChild(item);
-        });
-    } catch (e) {
-        dropdown.innerHTML = '<div class="dropdown-item">Error loading</div>';
+const folder="./websites_ver/";
+const launchBtn=document.getElementById("launchBtn");
+const versionBtn=document.getElementById("versionBtn");
+const dropdown=document.getElementById("dropdown");
+const versionDisplay=document.getElementById("versionDisplay");
+let selectedVersion=null;
+async function loadVersions(){
+    try{
+        const res=await fetch(folder+"versions.json");
+        const versions=await res.json();
+        dropdown.innerHTML="";
+        versions.forEach(v=>{
+            const item=document.createElement("div");
+            item.className="dropdown-item";
+            item.textContent=v.replace(".html","");
+            item.onclick=()=>selectVersion(v);
+            dropdown.appendChild(item)
+        })
+    }catch(e){
+        dropdown.innerHTML='<div class="dropdown-item">Error loading</div>'
     }
 }
-
-function selectVersion(version) {
-    selectedVersion = version;
-    const name = version.replace(".html", "");
-    versionDisplay.textContent = name;
-    launchBtn.disabled = false;
-    dropdown.classList.remove("show");
+function selectVersion(version){
+    selectedVersion=version;
+    const name=version.replace(".html","");
+    versionDisplay.textContent=name;
+    launchBtn.disabled=false;
+    dropdown.classList.remove("show")
 }
-
-versionBtn.onclick = () => dropdown.classList.toggle("show");
-
-launchBtn.onclick = () => {
-    if (selectedVersion) {
-        window.location.href = folder + selectedVersion;
-    }
-};
-
-document.addEventListener("click", e => {
-    if (!versionBtn.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.classList.remove("show");
-    }
+versionBtn.onclick=()=>dropdown.classList.toggle("show");
+launchBtn.onclick=()=>{if(selectedVersion)window.location.href=folder+selectedVersion};
+document.addEventListener("click",e=>{
+    if(!versionBtn.contains(e.target)&&!dropdown.contains(e.target))dropdown.classList.remove("show")
 });
-
 loadVersions();
 </script>
 </body>
